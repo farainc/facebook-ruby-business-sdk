@@ -34,7 +34,6 @@ module FacebookAds
     field :id, 'string'
     field :is_access_revoked, 'bool'
     field :is_automated_experience, 'bool'
-    field :last_payment_time, 'datetime'
     field :legal_entity_name, 'string'
     field :liable_biz_name, 'string'
     field :max_balance, 'CurrencyAmount'
@@ -65,6 +64,13 @@ module FacebookAds
         api.has_param :partition_type, { enum: -> { ExtendedCreditAllocationConfig::PARTITION_TYPE }}
         api.has_param :receiving_business_id, 'string'
         api.has_param :send_bill_to, { enum: -> { ExtendedCreditAllocationConfig::SEND_BILL_TO }}
+      end
+    end
+
+    has_edge :whatsapp_credit_sharing_and_attach do |edge|
+      edge.post do |api|
+        api.has_param :waba_currency, 'string'
+        api.has_param :waba_id, 'string'
       end
     end
 

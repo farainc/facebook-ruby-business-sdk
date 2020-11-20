@@ -59,6 +59,7 @@ module FacebookAds
       "CREDIT",
       "EMPLOYMENT",
       "HOUSING",
+      "ISSUES_ELECTIONS_POLITICS",
       "NONE",
     ]
 
@@ -134,6 +135,7 @@ module FacebookAds
       "industries",
       "instagram_hashtags",
       "instagram_positions",
+      "instream_video_skippable_excluded",
       "instream_video_sponsorship_placements",
       "interest_defaults_source",
       "interested_in",
@@ -183,11 +185,20 @@ module FacebookAds
       "zips",
     ]
 
-    MODE = [
-      "best_performing",
-      "recently_used",
-      "related",
-      "suggestions",
+    APP_STORE = [
+      "amazon_app_store",
+      "does_not_exist",
+      "fb_android_store",
+      "fb_canvas",
+      "fb_gameroom",
+      "google_play",
+      "instant_game",
+      "itunes",
+      "itunes_ipad",
+      "oculus_app_store",
+      "roku_channel_store",
+      "windows_10_store",
+      "windows_store",
     ]
 
     OBJECTIVE = [
@@ -200,11 +211,20 @@ module FacebookAds
       "LOCAL_AWARENESS",
       "MESSAGES",
       "OFFER_CLAIMS",
+      "OUTCOME_LEADS",
       "PAGE_LIKES",
       "POST_ENGAGEMENT",
       "PRODUCT_CATALOG_SALES",
       "REACH",
+      "STORE_VISITS",
       "VIDEO_VIEWS",
+    ]
+
+    MODE = [
+      "best_performing",
+      "recently_used",
+      "related",
+      "suggestions",
     ]
 
 

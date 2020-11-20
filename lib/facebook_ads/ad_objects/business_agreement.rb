@@ -25,11 +25,18 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class WhatsAppBusinessProfile < AdObject
+  class BusinessAgreement < AdObject
+    REQUEST_STATUS = [
+      "APPROVE",
+      "DECLINE",
+      "EXPIRED",
+      "IN_PROGRESS",
+      "PENDING",
+    ]
+
 
     field :id, 'string'
-    field :name_verification, 'object'
-    field :verified_name, 'string'
+    field :request_status, 'string'
     has_no_delete
 
   end

@@ -25,18 +25,11 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class BrandAudience < AdObject
+  class TargetingRelaxation < AdObject
 
-    field :account, 'AdAccount'
-    field :delivery_targeting, 'Targeting'
-    field :description, 'string'
-    field :id, 'string'
-    field :name, 'string'
-    field :sentence_lines, { list: 'string' }
-    field :status, 'string'
-    field :targeting, 'Targeting'
-    field :time_created, 'datetime'
-    field :time_updated, 'datetime'
+    field :lookalike, 'int'
+    has_no_id
+    has_no_get
     has_no_post
     has_no_delete
 

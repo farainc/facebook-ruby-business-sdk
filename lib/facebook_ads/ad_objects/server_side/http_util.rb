@@ -16,34 +16,16 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FB:AUTOGEN
-
 module FacebookAds
-  # This class is auto-generated.
-
-  # For any issues or feature requests related to this class, please let us know
-  # on github and we'll fix in our codegen framework. We'll not be able to accept
-  # pull request for this class.
-
-  class UserTaggableFriend < AdObject
-
-    field :first_name, 'string'
-    field :id, 'string'
-    field :last_name, 'string'
-    field :middle_name, 'string'
-    field :name, 'string'
-    has_no_get
-    has_no_post
-    has_no_delete
-
-    has_edge :picture do |edge|
-      edge.get 'ProfilePictureSource' do |api|
-        api.has_param :height, 'int'
-        api.has_param :redirect, 'bool'
-        api.has_param :type, { enum: -> { ProfilePictureSource::TYPE }}
-        api.has_param :width, 'int'
-      end
+	module ServerSide
+        class HttpUtil
+            def self.appsecret_proof(app_secret, access_token)
+                OpenSSL::HMAC.hexdigest(
+                    OpenSSL::Digest.new('sha256'),
+                    app_secret,
+                    access_token
+                )
+            end
+        end
     end
-
-  end
 end

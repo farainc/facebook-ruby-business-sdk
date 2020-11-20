@@ -43,6 +43,12 @@ module FacebookAds
     has_no_delete
 
     has_edge :comments do |edge|
+      edge.get 'Comment' do |api|
+        api.has_param :filter, { enum: -> { Comment::FILTER }}
+        api.has_param :live_filter, { enum: -> { Comment::LIVE_FILTER }}
+        api.has_param :order, { enum: -> { Comment::ORDER }}
+        api.has_param :since, 'datetime'
+      end
       edge.post 'Comment' do |api|
         api.has_param :attachment_id, 'string'
         api.has_param :attachment_share_url, 'string'
@@ -62,12 +68,6 @@ module FacebookAds
 
     has_edge :likes do |edge|
       edge.get 'Profile'
-    end
-
-    has_edge :reactions do |edge|
-      edge.get 'Profile' do |api|
-        api.has_param :type, { enum: -> { Profile::TYPE }}
-      end
     end
 
     has_edge :sharedposts do |edge|

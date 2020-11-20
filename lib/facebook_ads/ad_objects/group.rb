@@ -70,9 +70,11 @@ module FacebookAds
       "SCHOOL_CLASS",
       "SORORITY",
       "SPORTS",
+      "STREAMER",
       "STUDY_GROUP",
       "SUPPORT",
       "TEAMMATES",
+      "THEME",
       "TRAVEL_PLANNING",
       "WORK_ANNOUNCEMENT",
       "WORK_DEMO_GROUP",
@@ -80,10 +82,12 @@ module FacebookAds
       "WORK_EPHEMERAL",
       "WORK_FEEDBACK",
       "WORK_FOR_SALE",
+      "WORK_GARDEN",
       "WORK_LEARNING",
       "WORK_MENTORSHIP",
       "WORK_MULTI_COMPANY",
       "WORK_RECRUITING",
+      "WORK_RESUME_REVIEW",
       "WORK_SOCIAL",
       "WORK_TEAM",
       "WORK_TEAMWORK",
@@ -122,9 +126,11 @@ module FacebookAds
       "SCHOOL_CLASS",
       "SORORITY",
       "SPORTS",
+      "STREAMER",
       "STUDY_GROUP",
       "SUPPORT",
       "TEAMMATES",
+      "THEME",
       "TRAVEL_PLANNING",
       "WORK_ANNOUNCEMENT",
       "WORK_DEMO_GROUP",
@@ -132,10 +138,12 @@ module FacebookAds
       "WORK_EPHEMERAL",
       "WORK_FEEDBACK",
       "WORK_FOR_SALE",
+      "WORK_GARDEN",
       "WORK_LEARNING",
       "WORK_MENTORSHIP",
       "WORK_MULTI_COMPANY",
       "WORK_RECRUITING",
+      "WORK_RESUME_REVIEW",
       "WORK_SOCIAL",
       "WORK_TEAM",
       "WORK_TEAMWORK",
@@ -351,6 +359,7 @@ module FacebookAds
       edge.post 'LiveVideo' do |api|
         api.has_param :content_tags, { list: 'string' }
         api.has_param :description, 'string'
+        api.has_param :enable_backup_ingest, 'bool'
         api.has_param :encoding_settings, 'string'
         api.has_param :fisheye_video_cropped, 'bool'
         api.has_param :front_z_rotation, 'double'
@@ -362,7 +371,6 @@ module FacebookAds
         api.has_param :privacy, 'string'
         api.has_param :projection, { enum: -> { LiveVideo::PROJECTION }}
         api.has_param :published, 'bool'
-        api.has_param :save_vod, 'bool'
         api.has_param :schedule_custom_profile_image, 'file'
         api.has_param :spatial_audio_format, { enum: -> { LiveVideo::SPATIAL_AUDIO_FORMAT }}
         api.has_param :status, { enum: -> { LiveVideo::STATUS }}
@@ -450,6 +458,7 @@ module FacebookAds
 
     has_edge :picture do |edge|
       edge.get 'ProfilePictureSource' do |api|
+        api.has_param :breaking_change, { enum: -> { ProfilePictureSource::BREAKING_CHANGE }}
         api.has_param :height, 'int'
         api.has_param :redirect, 'bool'
         api.has_param :type, { enum: -> { ProfilePictureSource::TYPE }}
@@ -477,6 +486,7 @@ module FacebookAds
         api.has_param :composer_type, 'string'
         api.has_param :container_type, { enum: -> { AdVideo::CONTAINER_TYPE }}
         api.has_param :content_category, { enum: -> { AdVideo::CONTENT_CATEGORY }}
+        api.has_param :creative_tools, 'string'
         api.has_param :description, 'string'
         api.has_param :embeddable, 'bool'
         api.has_param :end_offset, 'int'
@@ -518,6 +528,7 @@ module FacebookAds
         api.has_param :scheduled_publish_time, 'int'
         api.has_param :slideshow_spec, 'hash'
         api.has_param :source, 'string'
+        api.has_param :source_instagram_media_id, 'string'
         api.has_param :spherical, 'bool'
         api.has_param :start_offset, 'int'
         api.has_param :swap_mode, { enum: -> { AdVideo::SWAP_MODE }}
@@ -532,6 +543,7 @@ module FacebookAds
         api.has_param :upload_session_id, 'string'
         api.has_param :upload_setting_properties, 'string'
         api.has_param :video_file_chunk, 'string'
+        api.has_param :video_id_original, 'string'
         api.has_param :video_start_time_ms, 'int'
         api.has_param :waterfall_id, 'string'
       end

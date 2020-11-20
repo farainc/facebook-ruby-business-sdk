@@ -29,9 +29,19 @@ module FacebookAds
     ROLE = [
       "ADMIN",
       "ADS_RIGHTS_REVIEWER",
+      "DEFAULT",
+      "DEVELOPER",
       "EMPLOYEE",
       "FINANCE_ANALYST",
+      "FINANCE_EDIT",
       "FINANCE_EDITOR",
+      "FINANCE_VIEW",
+      "MANAGE",
+      "PARTNER_CENTER_ADMIN",
+      "PARTNER_CENTER_ANALYST",
+      "PARTNER_CENTER_EDUCATION",
+      "PARTNER_CENTER_MARKETING",
+      "PARTNER_CENTER_OPERATIONS",
     ]
 
 

@@ -60,9 +60,6 @@ module FacebookAds
     PERMITTED_TASKS = [
       "ADVERTISE",
       "ANALYZE",
-      "CREATIVE",
-      "DRAFT",
-      "FB_EMPLOYEE_DSO_ADVERTISE",
       "MANAGE",
     ]
 
@@ -81,6 +78,7 @@ module FacebookAds
       "MANAGE",
       "MANAGE_JOBS",
       "MANAGE_LEADS",
+      "MESSAGING",
       "MODERATE",
       "MODERATE_COMMUNITY",
       "PAGES_MESSAGING",
@@ -120,8 +118,15 @@ module FacebookAds
     has_edge :access_token do |edge|
       edge.post 'Business' do |api|
         api.has_param :app_id, 'string'
+        api.has_param :fbe_external_business_id, 'string'
         api.has_param :scope, { list: 'Permission' }
         api.has_param :system_user_name, 'string'
+      end
+    end
+
+    has_edge :ad_accounts do |edge|
+      edge.delete do |api|
+        api.has_param :adaccount_id, 'string'
       end
     end
 
@@ -210,15 +215,16 @@ module FacebookAds
       edge.get 'Business'
     end
 
-    has_edge :an_placements do |edge|
-      edge.get 'AdPlacement'
+    has_edge :aggregate_revenue do |edge|
+      edge.post do |api|
+        api.has_param :ecpms, { list: 'string' }
+        api.has_param :query_ids, { list: 'string' }
+        api.has_param :request_id, 'string'
+      end
     end
 
-    has_edge :attempted_sharing_agreements do |edge|
-      edge.get 'BusinessCreativeFolderSharingAgreement' do |api|
-        api.has_param :request_status, { enum: -> { BusinessCreativeFolderSharingAgreement::REQUEST_STATUS }}
-        api.has_param :requesting_business_id, 'string'
-      end
+    has_edge :an_placements do |edge|
+      edge.get 'AdPlacement'
     end
 
     has_edge :block_list_drafts do |edge|
@@ -252,10 +258,6 @@ module FacebookAds
 
     has_edge :business_users do |edge|
       edge.get 'BusinessUser'
-      edge.post 'BusinessUser' do |api|
-        api.has_param :email, 'string'
-        api.has_param :role, { enum: -> { BusinessUser::ROLE }}
-      end
     end
 
     has_edge :claim_custom_conversions do |edge|
@@ -295,11 +297,39 @@ module FacebookAds
       edge.get 'ProductCatalog'
     end
 
+    has_edge :client_whatsapp_business_accounts do |edge|
+      edge.get 'WhatsAppBusinessAccount'
+    end
+
     has_edge :clients do |edge|
       edge.delete do |api|
         api.has_param :business, 'string'
       end
       edge.get 'Business'
+    end
+
+    has_edge :collaborative_ads_collaboration_requests do |edge|
+      edge.get 'CpasCollaborationRequest' do |api|
+        api.has_param :status, 'string'
+      end
+      edge.post 'CpasCollaborationRequest' do |api|
+        api.has_param :brands, { list: 'string' }
+        api.has_param :contact_email, 'string'
+        api.has_param :contact_first_name, 'string'
+        api.has_param :contact_last_name, 'string'
+        api.has_param :phone_number, 'string'
+        api.has_param :receiver_business, 'string'
+        api.has_param :requester_agency_or_brand, { enum: -> { CpasCollaborationRequest::REQUESTER_AGENCY_OR_BRAND }}
+        api.has_param :sender_client_business, 'string'
+      end
+    end
+
+    has_edge :collaborative_ads_suggested_partners do |edge|
+      edge.get 'CpasAdvertiserPartnershipRecommendation'
+    end
+
+    has_edge :commerce_merchant_settings do |edge|
+      edge.get 'CommerceMerchantSettings'
     end
 
     has_edge :content_delivery_report do |edge|
@@ -313,22 +343,11 @@ module FacebookAds
       end
     end
 
-    has_edge :creative_asset_tags do |edge|
-      edge.get 'CreativeAssetTag'
-    end
-
-    has_edge :creative_folders do |edge|
-      edge.get 'BusinessCreativeFolder'
-      edge.post 'BusinessCreativeFolder' do |api|
-        api.has_param :description, 'string'
+    has_edge :create_and_apply_publisher_block_list do |edge|
+      edge.post do |api|
+        api.has_param :is_auto_blocking_on, 'bool'
         api.has_param :name, 'string'
-        api.has_param :parent_folder_id, 'string'
-      end
-    end
-
-    has_edge :creatives do |edge|
-      edge.get 'BusinessCreative' do |api|
-        api.has_param :creative_folder_id, 'string'
+        api.has_param :publisher_urls, { list: 'string' }
       end
     end
 
@@ -358,20 +377,17 @@ module FacebookAds
       end
     end
 
-    has_edge :images do |edge|
-      edge.post 'BusinessImage' do |api|
-        api.has_param :ad_placements_validation_only, 'bool'
-        api.has_param :bytes, 'object'
-        api.has_param :creative_folder_id, 'string'
-        api.has_param :name, 'string'
-        api.has_param :validation_ad_placements, { list: { enum: -> { BusinessImage::VALIDATION_AD_PLACEMENTS }} }
-      end
-    end
-
     has_edge :initiated_audience_sharing_requests do |edge|
       edge.get 'BusinessAssetSharingAgreement' do |api|
         api.has_param :recipient_id, 'string'
         api.has_param :request_status, { enum: -> { BusinessAssetSharingAgreement::REQUEST_STATUS }}
+      end
+    end
+
+    has_edge :initiated_sharing_agreements do |edge|
+      edge.get 'BusinessAgreement' do |api|
+        api.has_param :receiving_business_id, 'string'
+        api.has_param :request_status, { enum: -> { BusinessAgreement::REQUEST_STATUS }}
       end
     end
 
@@ -382,11 +398,16 @@ module FacebookAds
       edge.get 'InstagramUser'
     end
 
+    has_edge :instagram_business_accounts do |edge|
+      edge.get 'IgUser'
+    end
+
     has_edge :managed_businesses do |edge|
       edge.delete do |api|
         api.has_param :existing_client_business_id, 'string'
       end
       edge.post 'Business' do |api|
+        api.has_param :child_business_external_id, 'string'
         api.has_param :existing_client_business_id, 'string'
         api.has_param :name, 'string'
         api.has_param :sales_rep_email, 'string'
@@ -435,9 +456,11 @@ module FacebookAds
         api.has_param :client_id, 'string'
       end
       edge.get 'Business' do |api|
+        api.has_param :child_business_external_id, 'string'
         api.has_param :client_user_id, 'int'
       end
       edge.post 'Business' do |api|
+        api.has_param :child_business_external_id, 'string'
         api.has_param :name, 'string'
         api.has_param :page_permitted_tasks, { list: { enum: -> { Business::PAGE_PERMITTED_TASKS }} }
         api.has_param :sales_rep_email, 'string'
@@ -458,7 +481,6 @@ module FacebookAds
       edge.get 'Page'
       edge.post 'Business' do |api|
         api.has_param :code, 'string'
-        api.has_param :ig_password, 'string'
         api.has_param :page_id, 'int'
       end
     end
@@ -470,13 +492,20 @@ module FacebookAds
     has_edge :owned_product_catalogs do |edge|
       edge.get 'ProductCatalog'
       edge.post 'ProductCatalog' do |api|
+        api.has_param :catalog_segment_filter, 'object'
+        api.has_param :catalog_segment_product_set_id, 'string'
         api.has_param :da_display_settings, 'object'
         api.has_param :destination_catalog_settings, 'hash'
         api.has_param :flight_catalog_settings, 'hash'
         api.has_param :name, 'string'
+        api.has_param :parent_catalog_id, 'string'
         api.has_param :store_catalog_settings, 'hash'
         api.has_param :vertical, { enum: -> { ProductCatalog::VERTICAL }}
       end
+    end
+
+    has_edge :owned_whatsapp_business_accounts do |edge|
+      edge.get 'WhatsAppBusinessAccount'
     end
 
     has_edge :pages do |edge|
@@ -505,10 +534,6 @@ module FacebookAds
       edge.get 'BusinessPageRequest'
     end
 
-    has_edge :pending_shared_creative_folders do |edge|
-      edge.get 'BusinessCreativeFolder'
-    end
-
     has_edge :pending_users do |edge|
       edge.get 'BusinessRoleRequest' do |api|
         api.has_param :email, 'string'
@@ -517,6 +542,7 @@ module FacebookAds
 
     has_edge :picture do |edge|
       edge.get 'ProfilePictureSource' do |api|
+        api.has_param :breaking_change, { enum: -> { ProfilePictureSource::BREAKING_CHANGE }}
         api.has_param :height, 'int'
         api.has_param :redirect, 'bool'
         api.has_param :type, { enum: -> { ProfilePictureSource::TYPE }}
@@ -535,13 +561,15 @@ module FacebookAds
       end
     end
 
+    has_edge :received_sharing_agreements do |edge|
+      edge.get 'BusinessAgreement' do |api|
+        api.has_param :request_status, { enum: -> { BusinessAgreement::REQUEST_STATUS }}
+        api.has_param :requesting_business_id, 'string'
+      end
+    end
+
     has_edge :system_users do |edge|
       edge.get 'SystemUser'
-      edge.post 'SystemUser' do |api|
-        api.has_param :name, 'string'
-        api.has_param :role, { enum: -> { SystemUser::ROLE }}
-        api.has_param :system_user_id, 'int'
-      end
     end
 
     has_edge :third_party_measurement_report_dataset do |edge|
@@ -558,84 +586,6 @@ module FacebookAds
         api.has_param :match_universe, { enum: -> { MeasurementUploadEvent::MATCH_UNIVERSE }}
         api.has_param :timezone, { enum: -> { MeasurementUploadEvent::TIMEZONE }}
         api.has_param :upload_tag, 'string'
-      end
-    end
-
-    has_edge :videos do |edge|
-      edge.post 'AdVideo' do |api|
-        api.has_param :ad_placements_validation_only, 'bool'
-        api.has_param :adaptive_type, 'string'
-        api.has_param :animated_effect_id, 'int'
-        api.has_param :application_id, 'string'
-        api.has_param :asked_fun_fact_prompt_id, 'int'
-        api.has_param :attribution_app_id, 'string'
-        api.has_param :audio_story_wave_animation_handle, 'string'
-        api.has_param :chunk_session_id, 'string'
-        api.has_param :composer_entry_picker, 'string'
-        api.has_param :composer_entry_point, 'string'
-        api.has_param :composer_entry_time, 'int'
-        api.has_param :composer_session_events_log, 'string'
-        api.has_param :composer_session_id, 'string'
-        api.has_param :composer_source_surface, 'string'
-        api.has_param :composer_type, 'string'
-        api.has_param :container_type, { enum: -> { AdVideo::CONTAINER_TYPE }}
-        api.has_param :content_category, { enum: -> { AdVideo::CONTENT_CATEGORY }}
-        api.has_param :creative_folder_id, 'string'
-        api.has_param :description, 'string'
-        api.has_param :embeddable, 'bool'
-        api.has_param :end_offset, 'int'
-        api.has_param :fbuploader_video_file_chunk, 'string'
-        api.has_param :file_size, 'int'
-        api.has_param :file_url, 'string'
-        api.has_param :fisheye_video_cropped, 'bool'
-        api.has_param :formatting, { enum: -> { AdVideo::FORMATTING }}
-        api.has_param :fov, 'int'
-        api.has_param :front_z_rotation, 'double'
-        api.has_param :fun_fact_prompt_id, 'int'
-        api.has_param :fun_fact_toastee_id, 'int'
-        api.has_param :guide, { list: { list: 'int' } }
-        api.has_param :guide_enabled, 'bool'
-        api.has_param :has_nickname, 'bool'
-        api.has_param :holiday_card, 'string'
-        api.has_param :initial_heading, 'int'
-        api.has_param :initial_pitch, 'int'
-        api.has_param :instant_game_entry_point_data, 'string'
-        api.has_param :is_boost_intended, 'bool'
-        api.has_param :is_group_linking_post, 'bool'
-        api.has_param :is_voice_clip, 'bool'
-        api.has_param :location_source_id, 'string'
-        api.has_param :offer_like_post_id, 'int'
-        api.has_param :og_action_type_id, 'string'
-        api.has_param :og_icon_id, 'string'
-        api.has_param :og_object_id, 'string'
-        api.has_param :og_phrase, 'string'
-        api.has_param :og_suggestion_mechanism, 'string'
-        api.has_param :original_fov, 'int'
-        api.has_param :original_projection_type, { enum: -> { AdVideo::ORIGINAL_PROJECTION_TYPE }}
-        api.has_param :publish_event_id, 'int'
-        api.has_param :react_mode_metadata, 'string'
-        api.has_param :referenced_sticker_id, 'string'
-        api.has_param :replace_video_id, 'string'
-        api.has_param :sales_promo_id, 'int'
-        api.has_param :slideshow_spec, 'hash'
-        api.has_param :source, 'string'
-        api.has_param :spherical, 'bool'
-        api.has_param :start_offset, 'int'
-        api.has_param :swap_mode, { enum: -> { AdVideo::SWAP_MODE }}
-        api.has_param :text_format_metadata, 'string'
-        api.has_param :throwback_camera_roll_media, 'string'
-        api.has_param :thumb, 'file'
-        api.has_param :time_since_original_post, 'int'
-        api.has_param :title, 'string'
-        api.has_param :transcode_setting_properties, 'string'
-        api.has_param :unpublished_content_type, { enum: -> { AdVideo::UNPUBLISHED_CONTENT_TYPE }}
-        api.has_param :upload_phase, { enum: -> { AdVideo::UPLOAD_PHASE }}
-        api.has_param :upload_session_id, 'string'
-        api.has_param :upload_setting_properties, 'string'
-        api.has_param :validation_ad_placements, { list: { enum: -> { AdVideo::VALIDATION_AD_PLACEMENTS }} }
-        api.has_param :video_file_chunk, 'string'
-        api.has_param :video_start_time_ms, 'int'
-        api.has_param :waterfall_id, 'string'
       end
     end
 

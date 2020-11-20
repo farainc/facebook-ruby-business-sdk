@@ -50,6 +50,7 @@ module FacebookAds
       "FIND_A_GROUP",
       "FIND_YOUR_GROUPS",
       "FOLLOW_NEWS_STORYLINE",
+      "FOLLOW_PAGE",
       "FOLLOW_USER",
       "GET_DIRECTIONS",
       "GET_OFFER",
@@ -70,16 +71,22 @@ module FacebookAds
       "ORDER_NOW",
       "PAY_TO_ACCESS",
       "PLAY_GAME",
+      "PURCHASE_GIFT_CARDS",
       "RECORD_NOW",
+      "REFER_FRIENDS",
       "REQUEST_TIME",
       "SAY_THANKS",
       "SEE_MORE",
       "SELL_NOW",
+      "SEND_A_GIFT",
       "SHARE",
       "SHOP_NOW",
       "SIGN_UP",
       "SOTTO_SUBSCRIBE",
+      "START_ORDER",
       "SUBSCRIBE",
+      "SWIPE_UP_PRODUCT",
+      "SWIPE_UP_SHOP",
       "UPDATE_APP",
       "USE_APP",
       "USE_MOBILE_APP",
@@ -176,6 +183,7 @@ module FacebookAds
     field :instagram_actor_id, 'string'
     field :instagram_permalink_url, 'string'
     field :instagram_story_id, 'string'
+    field :instagram_user_id, 'string'
     field :interactive_components_spec, 'AdCreativeInteractiveComponentsSpec'
     field :link_deep_link_url, 'string'
     field :link_destination_display_url, 'string'
@@ -195,6 +203,7 @@ module FacebookAds
     field :portrait_customizations, 'AdCreativePortraitCustomizations'
     field :product_set_id, 'string'
     field :recommender_settings, 'AdCreativeRecommenderSettings'
+    field :source_instagram_media_id, 'string'
     field :status, { enum: -> { STATUS }}
     field :template_url, 'string'
     field :template_url_spec, 'AdCreativeTemplateUrlSpec'
@@ -209,9 +218,6 @@ module FacebookAds
     field :is_dco_internal, 'bool'
 
     has_edge :adlabels do |edge|
-      edge.delete do |api|
-        api.has_param :adlabels, { list: 'object' }
-      end
       edge.post 'AdCreative' do |api|
         api.has_param :adlabels, { list: 'object' }
       end

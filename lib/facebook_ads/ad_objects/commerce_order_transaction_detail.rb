@@ -25,45 +25,27 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class OpenGraphObject < AdObject
+  class CommerceOrderTransactionDetail < AdObject
 
-    field :admins, { list: 'object' }
-    field :application, 'object'
-    field :audio, { list: 'object' }
-    field :created_time, 'datetime'
-    field :description, 'string'
-    field :determiner, 'string'
-    field :engagement, 'Engagement'
+    field :net_payment_amount, 'object'
+    field :order_details, 'CommerceOrder'
+    field :payout_reference_id, 'string'
+    field :processing_fee, 'object'
+    field :tax_rate, 'string'
+    field :transaction_date, 'string'
+    field :transaction_type, 'string'
+    field :transfer_id, 'string'
     field :id, 'string'
-    field :image, { list: 'object' }
-    field :is_scraped, 'bool'
-    field :locale, 'object'
-    field :location, 'Location'
-    field :post_action_id, 'string'
-    field :profile_id, 'object'
-    field :restrictions, 'object'
-    field :see_also, { list: 'string' }
-    field :site_name, 'string'
-    field :title, 'string'
-    field :type, 'string'
-    field :updated_time, 'datetime'
-    field :video, { list: 'object' }
+    has_no_get
     has_no_post
     has_no_delete
 
-    has_edge :comments do |edge|
-      edge.get 'Comment' do |api|
-        api.has_param :filter, { enum: -> { Comment::FILTER }}
-        api.has_param :live_filter, { enum: -> { Comment::LIVE_FILTER }}
-        api.has_param :order, { enum: -> { Comment::ORDER }}
-        api.has_param :since, 'datetime'
-      end
+    has_edge :items do |edge|
+      edge.get
     end
 
-    has_edge :reactions do |edge|
-      edge.get 'Profile' do |api|
-        api.has_param :type, { enum: -> { Profile::TYPE }}
-      end
+    has_edge :tax_details do |edge|
+      edge.get
     end
 
   end

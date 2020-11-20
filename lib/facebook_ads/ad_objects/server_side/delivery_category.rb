@@ -16,22 +16,18 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FB:AUTOGEN
-
 module FacebookAds
-  # This class is auto-generated.
+	module ServerSide
+		DeliveryCategory = Set[
 
-  # For any issues or feature requests related to this class, please let us know
-  # on github and we'll fix in our codegen framework. We'll not be able to accept
-  # pull request for this class.
+			# Customer needs to enter the store to get the purchased product.
+			'in_store',
 
-  class AtlasUrl < AdObject
+			# Customer picks up their order by driving to a store and waiting inside their vehicle.
+			'curbside',
 
-    field :url, 'string'
-    has_no_id
-    has_no_get
-    has_no_post
-    has_no_delete
-
-  end
+			# Purchase is delivered to the customer's home.
+			'home_delivery'
+		]
+	end
 end

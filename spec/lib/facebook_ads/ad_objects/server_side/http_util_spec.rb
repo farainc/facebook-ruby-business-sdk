@@ -16,24 +16,22 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FB:AUTOGEN
+require 'openssl'
 
-module FacebookAds
-  # This class is auto-generated.
+RSpec.describe 'FacebookAds::ServerSide::HttpUtil' do
+    context 'app_secret_proof' do
+        it 'generates the proof' do
+            app_secret = 'app-secret-1'
+            access_token = 'access-token-2'
+            digest = OpenSSL::Digest.new('sha256')
+            expected = OpenSSL::HMAC.hexdigest(
+                digest,
+                app_secret,
+                access_token
+            )
 
-  # For any issues or feature requests related to this class, please let us know
-  # on github and we'll fix in our codegen framework. We'll not be able to accept
-  # pull request for this class.
-
-  class VideoGameShow < AdObject
-
-    field :end_time, 'datetime'
-    field :game_status, 'string'
-    field :game_type, 'string'
-    field :id, 'string'
-    field :start_time, 'datetime'
-    has_no_post
-    has_no_delete
-
-  end
+            actual = FacebookAds::ServerSide::HttpUtil.appsecret_proof(app_secret, access_token)
+            expect(actual).to eq(expected)
+        end
+    end
 end

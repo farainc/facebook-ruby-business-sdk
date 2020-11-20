@@ -25,17 +25,13 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class IterativeSplitTestConfig < AdObject
+  class AdCreativeAdDisclaimer < AdObject
 
-    field :budget, 'int'
-    field :end_time, 'datetime'
-    field :guidance, 'object'
-    field :id, 'string'
-    field :iterative_split_test_original_variant_id, 'string'
-    field :iterative_split_test_variant_to_split_mapping, 'hash'
-    field :results_window, 'object'
-    field :splits, { list: 'int' }
-    field :start_time, 'datetime'
+    field :text, 'string'
+    field :title, 'string'
+    field :url, 'string'
+    has_no_id
+    has_no_get
     has_no_post
     has_no_delete
 

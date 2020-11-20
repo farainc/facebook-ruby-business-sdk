@@ -26,14 +26,6 @@ module FacebookAds
   # pull request for this class.
 
   class SystemUser < AdObject
-    ROLE = [
-      "ADMIN",
-      "ADS_RIGHTS_REVIEWER",
-      "EMPLOYEE",
-      "FINANCE_ANALYST",
-      "FINANCE_EDITOR",
-    ]
-
 
     field :created_by, 'User'
     field :created_time, 'datetime'
@@ -41,8 +33,6 @@ module FacebookAds
     field :id, 'string'
     field :ip_permission, 'string'
     field :name, 'string'
-    field :role, { enum: -> { ROLE }}
-    field :system_user_id, 'int'
     has_no_post
     has_no_delete
 
@@ -62,10 +52,6 @@ module FacebookAds
 
     has_edge :assigned_product_catalogs do |edge|
       edge.get 'ProductCatalog'
-    end
-
-    has_edge :updated_by do |edge|
-      edge.get 'User'
     end
 
   end

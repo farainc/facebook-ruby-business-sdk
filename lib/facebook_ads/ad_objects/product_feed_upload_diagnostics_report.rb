@@ -25,12 +25,10 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class ClientTransparencyStatus < AdObject
+  class ProductFeedUploadDiagnosticsReport < AdObject
 
-    field :grace_period_expiration_date, 'datetime'
-    field :has_owning_business, 'bool'
-    field :is_satisfied, 'bool'
-    field :owning_business_requirements, 'object'
+    field :last_updated_time, 'string'
+    field :report_url, 'string'
     has_no_id
     has_no_get
     has_no_post

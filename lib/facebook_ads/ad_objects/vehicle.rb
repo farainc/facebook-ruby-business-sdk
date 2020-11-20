@@ -29,6 +29,7 @@ module FacebookAds
     AVAILABILITY = [
       "AVAILABLE",
       "NOT_AVAILABLE",
+      "PENDING",
     ]
 
     BODY_STYLE = [
@@ -105,8 +106,10 @@ module FacebookAds
 
 
     field :address, 'object'
+    field :applinks, 'CatalogItemAppLinks'
     field :availability, 'string'
     field :body_style, 'string'
+    field :category_specific_fields, 'CatalogSubVerticalList'
     field :condition, 'string'
     field :currency, 'string'
     field :custom_label_0, 'string'
@@ -147,7 +150,6 @@ module FacebookAds
     field :vehicle_type, 'string'
     field :vin, 'string'
     field :year, 'int'
-    field :applinks, 'object'
     has_no_delete
 
   end

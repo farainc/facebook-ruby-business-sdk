@@ -25,10 +25,14 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class ProductFeedUploadDiagnostics < AdObject
+  class CommerceMerchantSettingsSetupStatus < AdObject
 
-    field :last_modified_time, 'string'
-    field :report_url, 'string'
+    field :deals_setup, 'string'
+    field :marketplace_approval_status, 'string'
+    field :marketplace_approval_status_details, 'object'
+    field :payment_setup, 'string'
+    field :review_status, 'object'
+    field :shop_setup, 'string'
     has_no_id
     has_no_get
     has_no_post

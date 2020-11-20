@@ -16,26 +16,28 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FB:AUTOGEN
+require 'concurrent'
 
 module FacebookAds
-  # This class is auto-generated.
+  module ServerSide
+    class EventRequestAsync < EventRequest
+      def execute
+        Concurrent::Promise.execute do
+          super
+        end
+      end
 
-  # For any issues or feature requests related to this class, please let us know
-  # on github and we'll fix in our codegen framework. We'll not be able to accept
-  # pull request for this class.
-
-  class AdsInterest < AdObject
-
-    field :audience_size, 'int'
-    field :description, 'string'
-    field :disambiguation_category, 'string'
-    field :id, 'string'
-    field :name, 'string'
-    field :path, { list: 'string' }
-    field :topic, 'string'
-    has_no_post
-    has_no_delete
-
+      def clone_without_events
+        FacebookAds::ServerSide::EventRequestAsync.new(
+          pixel_id: pixel_id,
+          test_event_code: test_event_code,
+          partner_agent: partner_agent,
+          namespace_id: namespace_id,
+          upload_id: upload_id,
+          upload_tag: upload_tag,
+          upload_source: upload_source,
+        )
+      end
+    end
   end
 end

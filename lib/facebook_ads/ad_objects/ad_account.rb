@@ -77,6 +77,7 @@ module FacebookAds
       "THB",
       "TRY",
       "TWD",
+      "UAH",
       "USD",
       "UYU",
       "VND",
@@ -86,18 +87,12 @@ module FacebookAds
     PERMITTED_TASKS = [
       "ADVERTISE",
       "ANALYZE",
-      "CREATIVE",
-      "DRAFT",
-      "FB_EMPLOYEE_DSO_ADVERTISE",
       "MANAGE",
     ]
 
     TASKS = [
       "ADVERTISE",
       "ANALYZE",
-      "CREATIVE",
-      "DRAFT",
-      "FB_EMPLOYEE_DSO_ADVERTISE",
       "MANAGE",
     ]
 
@@ -118,6 +113,7 @@ module FacebookAds
       "FLIGHT",
       "HOME_LISTING",
       "HOTEL",
+      "LOCAL_SERVICE_BUSINESS",
       "LOCATION_BASED_ITEM",
       "MEDIA_TITLE",
       "OFFLINE_PRODUCT",
@@ -214,6 +210,7 @@ module FacebookAds
         api.has_param :after, 'string'
         api.has_param :business_id, 'string'
         api.has_param :category, { enum: -> { AdActivity::CATEGORY }}
+        api.has_param :data_source, { enum: -> { AdActivity::DATA_SOURCE }}
         api.has_param :extra_oids, { list: 'string' }
         api.has_param :limit, 'int'
         api.has_param :oid, 'string'
@@ -226,6 +223,7 @@ module FacebookAds
     has_edge :ad_place_page_sets do |edge|
       edge.get 'AdPlacePageSet'
       edge.post 'AdPlacePageSet' do |api|
+        api.has_param :category, { enum: -> { AdPlacePageSet::CATEGORY }}
         api.has_param :location_types, { list: { enum: -> { AdPlacePageSet::LOCATION_TYPES }} }
         api.has_param :name, 'string'
         api.has_param :parent_page, 'string'
@@ -235,19 +233,11 @@ module FacebookAds
 
     has_edge :ad_place_page_sets_async do |edge|
       edge.post 'AdPlacePageSet' do |api|
+        api.has_param :category, { enum: -> { AdPlacePageSet::CATEGORY }}
         api.has_param :location_types, { list: { enum: -> { AdPlacePageSet::LOCATION_TYPES }} }
         api.has_param :name, 'string'
         api.has_param :parent_page, 'string'
         api.has_param :targeted_area_type, { enum: -> { AdPlacePageSet::TARGETED_AREA_TYPE }}
-      end
-    end
-
-    has_edge :ad_sets do |edge|
-      edge.delete do |api|
-        api.has_param :before_date, 'datetime'
-        api.has_param :delete_offset, 'int'
-        api.has_param :delete_strategy, { enum: %w{DELETE_ANY DELETE_ARCHIVED_BEFORE DELETE_OLDEST }}
-        api.has_param :object_count, 'int'
       end
     end
 
@@ -278,6 +268,7 @@ module FacebookAds
         api.has_param :image_url, 'string'
         api.has_param :instagram_actor_id, 'string'
         api.has_param :instagram_permalink_url, 'string'
+        api.has_param :instagram_user_id, 'string'
         api.has_param :instant_checkout_setting, { enum: -> { AdCreative::INSTANT_CHECKOUT_SETTING }}
         api.has_param :interactive_components_spec, 'hash'
         api.has_param :is_dco_internal, 'bool'
@@ -295,6 +286,7 @@ module FacebookAds
         api.has_param :portrait_customizations, 'hash'
         api.has_param :product_set_id, 'string'
         api.has_param :recommender_settings, 'hash'
+        api.has_param :source_instagram_media_id, 'string'
         api.has_param :template_url, 'string'
         api.has_param :template_url_spec, 'object'
         api.has_param :thumbnail_url, 'string'
@@ -342,14 +334,11 @@ module FacebookAds
       edge.post 'PlayableContent' do |api|
         api.has_param :app_id, 'string'
         api.has_param :name, 'string'
+        api.has_param :session_id, 'string'
         api.has_param :source, 'file'
         api.has_param :source_url, 'string'
         api.has_param :source_zip, 'file'
       end
-    end
-
-    has_edge :adreportschedules do |edge|
-      edge.get
     end
 
     has_edge :adrules_history do |edge|
@@ -405,6 +394,7 @@ module FacebookAds
     has_edge :ads_volume do |edge|
       edge.get 'AdAccountAdVolume' do |api|
         api.has_param :page_id, 'int'
+        api.has_param :recommendation_type, { enum: -> { AdAccountAdVolume::RECOMMENDATION_TYPE }}
         api.has_param :show_breakdown_by_actor, 'bool'
       end
     end
@@ -528,6 +518,7 @@ module FacebookAds
         api.has_param :composer_type, 'string'
         api.has_param :container_type, { enum: -> { AdVideo::CONTAINER_TYPE }}
         api.has_param :content_category, { enum: -> { AdVideo::CONTENT_CATEGORY }}
+        api.has_param :creative_tools, 'string'
         api.has_param :description, 'string'
         api.has_param :embeddable, 'bool'
         api.has_param :end_offset, 'int'
@@ -567,6 +558,7 @@ module FacebookAds
         api.has_param :sales_promo_id, 'int'
         api.has_param :slideshow_spec, 'hash'
         api.has_param :source, 'file'
+        api.has_param :source_instagram_media_id, 'string'
         api.has_param :spherical, 'bool'
         api.has_param :start_offset, 'int'
         api.has_param :swap_mode, { enum: -> { AdVideo::SWAP_MODE }}
@@ -581,6 +573,7 @@ module FacebookAds
         api.has_param :upload_session_id, 'string'
         api.has_param :upload_setting_properties, 'string'
         api.has_param :video_file_chunk, 'file'
+        api.has_param :video_id_original, 'string'
         api.has_param :video_start_time_ms, 'int'
         api.has_param :waterfall_id, 'string'
         api.accepts_files!
@@ -680,7 +673,6 @@ module FacebookAds
       edge.post 'Campaign' do |api|
         api.has_param :adlabels, { list: 'object' }
         api.has_param :bid_strategy, { enum: -> { Campaign::BID_STRATEGY }}
-        api.has_param :budget_rebalance_flag, 'bool'
         api.has_param :buying_type, 'string'
         api.has_param :daily_budget, 'int'
         api.has_param :execution_options, { list: { enum: -> { Campaign::EXECUTION_OPTIONS }} }
@@ -690,8 +682,10 @@ module FacebookAds
         api.has_param :objective, { enum: -> { Campaign::OBJECTIVE }}
         api.has_param :pacing_type, { list: 'string' }
         api.has_param :promoted_object, 'object'
+        api.has_param :smart_promotion_type, { enum: -> { Campaign::SMART_PROMOTION_TYPE }}
         api.has_param :source_campaign_id, 'string'
-        api.has_param :special_ad_category, { enum: -> { Campaign::SPECIAL_AD_CATEGORY }}
+        api.has_param :special_ad_categories, { list: { enum: -> { Campaign::SPECIAL_AD_CATEGORIES }} }
+        api.has_param :special_ad_category_country, { list: { enum: -> { Campaign::SPECIAL_AD_CATEGORY_COUNTRY }} }
         api.has_param :spend_cap, 'int'
         api.has_param :status, { enum: -> { Campaign::STATUS }}
         api.has_param :topline_id, 'string'
@@ -706,6 +700,10 @@ module FacebookAds
       end
     end
 
+    has_edge :connected_instagram_accounts do |edge|
+      edge.get 'IgUser'
+    end
+
     has_edge :content_delivery_report do |edge|
       edge.get 'ContentDeliveryReport' do |api|
         api.has_param :end_date, 'datetime'
@@ -714,6 +712,14 @@ module FacebookAds
         api.has_param :position, { enum: -> { ContentDeliveryReport::POSITION }}
         api.has_param :start_date, 'datetime'
         api.has_param :summary, 'bool'
+      end
+    end
+
+    has_edge :create_and_apply_publisher_block_list do |edge|
+      edge.post do |api|
+        api.has_param :is_auto_blocking_on, 'bool'
+        api.has_param :name, 'string'
+        api.has_param :publisher_urls, { list: 'string' }
       end
     end
 
@@ -1059,9 +1065,12 @@ module FacebookAds
     has_edge :targetingsearch do |edge|
       edge.get 'AdAccountTargetingUnified' do |api|
         api.has_param :allow_only_fat_head_interests, 'bool'
+        api.has_param :app_store, { enum: -> { AdAccountTargetingUnified::APP_STORE }}
         api.has_param :countries, { list: 'string' }
         api.has_param :is_exclusion, 'bool'
         api.has_param :limit_type, { enum: -> { AdAccountTargetingUnified::LIMIT_TYPE }}
+        api.has_param :objective, { enum: -> { AdAccountTargetingUnified::OBJECTIVE }}
+        api.has_param :promoted_object, 'object'
         api.has_param :q, 'string'
         api.has_param :regulated_categories, { list: { enum: -> { AdAccountTargetingUnified::REGULATED_CATEGORIES }} }
         api.has_param :session_id, 'int'
@@ -1081,6 +1090,7 @@ module FacebookAds
 
     has_edge :targetingsuggestions do |edge|
       edge.get 'AdAccountTargetingUnified' do |api|
+        api.has_param :app_store, { enum: -> { AdAccountTargetingUnified::APP_STORE }}
         api.has_param :countries, { list: 'string' }
         api.has_param :limit_type, { enum: -> { AdAccountTargetingUnified::LIMIT_TYPE }}
         api.has_param :mode, { enum: -> { AdAccountTargetingUnified::MODE }}
@@ -1103,9 +1113,6 @@ module FacebookAds
     end
 
     has_edge :tracking do |edge|
-      edge.delete do |api|
-        api.has_param :tracking_specs, 'object'
-      end
       edge.get 'AdAccountTrackingData'
       edge.post 'AdAccount' do |api|
         api.has_param :tracking_specs, 'object'

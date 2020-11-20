@@ -44,6 +44,7 @@ module FacebookAds
       "FIND_A_GROUP",
       "FIND_YOUR_GROUPS",
       "FOLLOW_NEWS_STORYLINE",
+      "FOLLOW_PAGE",
       "FOLLOW_USER",
       "GET_DIRECTIONS",
       "GET_OFFER",
@@ -64,16 +65,22 @@ module FacebookAds
       "ORDER_NOW",
       "PAY_TO_ACCESS",
       "PLAY_GAME",
+      "PURCHASE_GIFT_CARDS",
       "RECORD_NOW",
+      "REFER_FRIENDS",
       "REQUEST_TIME",
       "SAY_THANKS",
       "SEE_MORE",
       "SELL_NOW",
+      "SEND_A_GIFT",
       "SHARE",
       "SHOP_NOW",
       "SIGN_UP",
       "SOTTO_SUBSCRIBE",
+      "START_ORDER",
       "SUBSCRIBE",
+      "SWIPE_UP_PRODUCT",
+      "SWIPE_UP_SHOP",
       "UPDATE_APP",
       "USE_APP",
       "USE_MOBILE_APP",
@@ -100,6 +107,7 @@ module FacebookAds
     field :images, { list: 'AdAssetFeedSpecImage' }
     field :link_urls, { list: 'AdAssetFeedSpecLinkUrl' }
     field :optimization_type, 'string'
+    field :posts, { list: 'object' }
     field :titles, { list: 'AdAssetFeedSpecTitle' }
     field :videos, { list: 'AdAssetFeedSpecVideo' }
     has_no_id

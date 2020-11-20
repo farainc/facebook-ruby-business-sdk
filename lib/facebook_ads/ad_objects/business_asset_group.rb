@@ -29,9 +29,6 @@ module FacebookAds
     ADACCOUNT_TASKS = [
       "ADVERTISE",
       "ANALYZE",
-      "CREATIVE",
-      "DRAFT",
-      "FB_EMPLOYEE_DSO_ADVERTISE",
       "MANAGE",
     ]
 
@@ -50,6 +47,7 @@ module FacebookAds
       "MANAGE",
       "MANAGE_JOBS",
       "MANAGE_LEADS",
+      "MESSAGING",
       "MODERATE",
       "MODERATE_COMMUNITY",
       "PAGES_MESSAGING",

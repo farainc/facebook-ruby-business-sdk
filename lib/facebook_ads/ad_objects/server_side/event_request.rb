@@ -39,11 +39,33 @@ module FacebookAds
       # Platform from which the event is sent e.g. wordpress
       attr_accessor :partner_agent
 
+      # Scope used to resolve extern_id or Third-party ID. Can be another data set or data partner ID.
+      attr_accessor :namespace_id
+
+      # Unique id used to denote the current set being uploaded.
+      attr_accessor :upload_id
+
+      # Tag string added to track your Offline event uploads.
+      attr_accessor :upload_tag
+
+      # The origin/source of data for the dataset to be uploaded.
+      attr_accessor :upload_source
+
+      # The HttpServiceInterface client to use for executing the request.
+      attr_accessor :http_service_client
+
       # @param [String] pixel_id
       # @param [Array(FacebookAds::ServerSide::Event)] events
       # @param [String] test_event_code
       # @param [String] partner_agent
-      def initialize(pixel_id: nil, events: nil, test_event_code: nil, partner_agent: nil)
+      # @param [String] namespace_id
+      # @param [String] upload_id
+      # @param [String] upload_tag
+      # @param [String] upload_source
+      # @param [HttpServiceInterface] http_service_client
+      def initialize(pixel_id: nil, events: nil, test_event_code: nil, partner_agent: nil,
+          namespace_id: nil, upload_id: nil, upload_tag: nil, upload_source: nil,
+          http_service_client: nil)
         unless pixel_id.nil?
           self.pixel_id = pixel_id
         end
@@ -55,6 +77,21 @@ module FacebookAds
         end
         unless partner_agent.nil?
           self.partner_agent = partner_agent
+        end
+        unless namespace_id.nil?
+          self.namespace_id = namespace_id
+        end
+        unless upload_id.nil?
+          self.upload_id = upload_id
+        end
+        unless upload_tag.nil?
+          self.upload_tag = upload_tag
+        end
+        unless upload_source.nil?
+          self.upload_source = upload_source
+        end
+        unless http_service_client.nil?
+          self.http_service_client = http_service_client
         end
       end
 
@@ -83,6 +120,26 @@ module FacebookAds
         if attributes.has_key?(:'partner_agent')
           self.partner_agent = attributes[:'partner_agent']
         end
+
+        if attributes.has_key?(:'namespace_id')
+          self.namespace_id = attributes[:'namespace_id']
+        end
+
+        if attributes.has_key?(:'upload_id')
+          self.upload_id = attributes[:'upload_id']
+        end
+
+        if attributes.has_key?(:'upload_tag')
+          self.upload_tag = attributes[:'upload_tag']
+        end
+
+        if attributes.has_key?(:'upload_source')
+          self.upload_source = attributes[:'upload_source']
+        end
+
+        if attributes.has_key?(:'http_service_client')
+          self.http_service_client = attributes[:'http_service_client']
+        end
       end
 
       # Execute request
@@ -90,15 +147,14 @@ module FacebookAds
         unless valid?
           raise list_invalid_properties
         end
-        normalized_events = normalize
+
+        if http_service_client
+          return execute_with_client(http_service_client)
+        end
+        params = get_params()
+        params[:data] = normalize
         ads_pixel = FacebookAds::AdsPixel.get(pixel_id)
-        response = ads_pixel.events.create(
-            {
-                data: normalized_events,
-                test_event_code: test_event_code,
-                partner_agent: partner_agent
-            }
-        )
+        response = ads_pixel.events.create(params)
         json_response_object = JSON.parse(JSON.generate(response), object_class: OpenStruct)
         FacebookAds::ServerSide::EventResponse.new(
             events_received: json_response_object.events_received,
@@ -113,6 +169,44 @@ module FacebookAds
           normalized_events.push(JSON.generate(event.normalize))
         end
         normalized_events
+      end
+
+      def get_params
+        params = {}
+        params[:test_event_code] = test_event_code unless test_event_code.nil?
+        params[:partner_agent] = partner_agent unless partner_agent.nil?
+        params[:namespace_id] = namespace_id unless namespace_id.nil?
+        params[:upload_id] = upload_id unless upload_id.nil?
+        params[:upload_tag] = upload_tag unless upload_tag.nil?
+        params[:upload_source] = upload_source unless upload_source.nil?
+        params
+      end
+
+      def execute_with_client http_client
+        url = [
+          "https://#{FacebookAds::DEFAULT_HOST}",
+          FacebookAds::DEFAULT_API_VERSION,
+          pixel_id,
+          'events',
+        ].join('/')
+        headers = {
+          'User-Agent' => "fbbizsdk-ruby-v#{FacebookAds::VERSION}"
+        }
+        params = get_params
+        params[:data] = events.map(&:normalize)
+        appsecret = FacebookAds.config.app_secret
+        access_token = FacebookAds.config.access_token
+        params[:access_token] = access_token
+        if appsecret
+          params[:appsecret_proof] = FacebookAds::ServerSide::HttpUtil.appsecret_proof(appsecret, access_token)
+        end
+
+        http_client.execute(
+          url,
+          FacebookAds::ServerSide::HttpMethod::POST,
+          headers,
+          params
+        )
       end
 
       # Show invalid properties with the reasons. Usually used together with valid?
@@ -137,9 +231,15 @@ module FacebookAds
       def ==(o)
         return true if self.equal?(o)
         self.class == o.class &&
+            pixel_id == o.pixel_id &&
             events == o.events &&
-            test_event_code == o.test_event_code
-            partner_agent == o.partner_agent
+            test_event_code == o.test_event_code &&
+            partner_agent == o.partner_agent &&
+            namespace_id == o.namespace_id &&
+            upload_id == o.upload_id &&
+            upload_tag == o.upload_tag &&
+            upload_source == o.upload_source &&
+            http_service_client == o.http_service_client
       end
 
       # @see the `==` method
@@ -150,7 +250,17 @@ module FacebookAds
       # Calculates hash code according to all attributes.
       # @return [Fixnum] Hash code
       def hash
-        [events, test_event_code, partner_agent].hash
+        [
+          pixel_id,
+          events,
+          test_event_code,
+          partner_agent,
+          namespace_id,
+          upload_id,
+          upload_tag,
+          upload_source,
+          http_service_client,
+        ].hash
       end
 
       def to_s
@@ -167,9 +277,20 @@ module FacebookAds
         unless partner_agent.nil?
           hash['partner_agent'] = partner_agent
         end
+        unless namespace_id.nil?
+          hash['namespace_id'] = namespace_id
+        end
+        unless upload_id.nil?
+          hash['upload_id'] = upload_id
+        end
+        unless upload_tag.nil?
+          hash['upload_tag'] = upload_tag
+        end
+        unless upload_source.nil?
+          hash['upload_source'] = upload_source
+        end
         hash.to_s
       end
     end
   end
 end
-

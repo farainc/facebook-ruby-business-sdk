@@ -25,11 +25,13 @@ module FacebookAds
   # on github and we'll fix in our codegen framework. We'll not be able to accept
   # pull request for this class.
 
-  class CustomAudiencePrefillState < AdObject
+  class CommercePayout < AdObject
 
-    field :description, 'string'
-    field :num_added, 'int'
+    field :amount, 'object'
+    field :payout_date, 'string'
+    field :payout_reference_id, 'string'
     field :status, 'string'
+    field :transfer_id, 'string'
     has_no_id
     has_no_get
     has_no_post

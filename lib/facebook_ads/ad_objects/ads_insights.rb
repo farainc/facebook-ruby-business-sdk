@@ -33,6 +33,7 @@ module FacebookAds
       "28d_view",
       "7d_click",
       "7d_view",
+      "dda",
       "default",
     ]
 
@@ -52,6 +53,7 @@ module FacebookAds
     ACTION_REPORT_TIME = [
       "conversion",
       "impression",
+      "mixed",
     ]
 
     BREAKDOWNS = [
@@ -152,10 +154,17 @@ module FacebookAds
     field :campaign_name, 'string'
     field :canvas_avg_view_percent, 'string'
     field :canvas_avg_view_time, 'string'
+    field :catalog_segment_actions, { list: 'AdsActionStats' }
+    field :catalog_segment_value, { list: 'AdsActionStats' }
+    field :catalog_segment_value_mobile_purchase_roas, { list: 'AdsActionStats' }
+    field :catalog_segment_value_omni_purchase_roas, { list: 'AdsActionStats' }
+    field :catalog_segment_value_website_purchase_roas, { list: 'AdsActionStats' }
     field :clicks, 'string'
     field :conversion_rate_ranking, 'string'
     field :conversion_values, { list: 'AdsActionStats' }
     field :conversions, { list: 'AdsActionStats' }
+    field :converted_product_quantity, { list: 'AdsActionStats' }
+    field :converted_product_value, { list: 'AdsActionStats' }
     field :cost_per_15_sec_video_view, { list: 'AdsActionStats' }
     field :cost_per_2_sec_continuous_video_view, { list: 'AdsActionStats' }
     field :cost_per_action_type, { list: 'AdsActionStats' }
@@ -200,6 +209,7 @@ module FacebookAds
     field :instant_experience_clicks_to_open, 'string'
     field :instant_experience_clicks_to_start, 'string'
     field :instant_experience_outbound_clicks, 'string'
+    field :interactive_component_tap, { list: 'AdsActionStats' }
     field :labels, 'string'
     field :location, 'string'
     field :mobile_app_purchase_roas, { list: 'AdsActionStats' }
@@ -208,6 +218,7 @@ module FacebookAds
     field :outbound_clicks_ctr, { list: 'AdsActionStats' }
     field :place_page_name, 'string'
     field :purchase_roas, { list: 'AdsActionStats' }
+    field :qualifying_question_qualify_answer_rate, 'string'
     field :quality_ranking, 'string'
     field :quality_score_ectr, 'string'
     field :quality_score_ecvr, 'string'
